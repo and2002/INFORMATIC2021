@@ -1,41 +1,68 @@
 global  _start						
-					
+
 section .bss						
-var_read:	resb N					
-var_write:	resb N					
-
+var_write:	resb 100
+var_d: resb 1
 section .text					
-_start:	
-    mov dx, 30
+_start:
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, var_write
+    mov rdx, 100
+    syscall
+    xor edi, edi
     
-    
-    ;CMP dx, 41; проверка на нижнюю границу 
-    ;JL L1 ;пререброска в конец
-    
-    ;CMP dx, 122  ;проверка на верхнюю границу 
-    ;JG L1 ;переброска в конец
-    
-    ;CMP dx, 91  ;проверка на верхнюю границу заглавных 
-    ;JL L2 ;переброска в обаботку заглавных
-    
-    ;CMP dx, 96  ;проверка на нижнюю границу строчных 
-    ;JG L3 ;переброска в обработку строчных
-    
-    ;CMP dx, 1024  ;переброска в конец 
-    ;JL L1 ;переброска в конец
-    
-    
-    ;L2:
-    ;add dx, 22
-    ;CMP dx, 1024  ;переброска в конец 
-    ;JL L1 ;переброска в конец
-    
-    ;L3:
-    ;sub dx, 22
-    ;CMP dx, 1024  ;переброска в конец 
-    ;JL L1 ;переброска в конец
-    
-    ;L1:
-    
+    L5:
+    xor dx, dx
+    mov dl, [var_write+edi]
+    add edi, 1
 
-   
+    CMP dx, 65; проверка на нижнюю границу 
+    JL L1 ;пререброска в конец
+
+    CMP dx, 122  ;проверка на верхнюю границу 
+    JG L1 ;переброска в конец
+
+    CMP dx, 91  ;проверка на верхнюю границу заглавных 
+    JL L2 ;переброска в обаботку заглавных
+
+    CMP dx, 96  ;проверка на нижнюю границу строчных 
+    JG L3 ;переброска в обработку строчных
+
+    CMP dx, 1024  ;переброска в конец 
+    JL L1 ;переброска в конец
+
+
+    L2:
+    add dx, 32
+    mov [var_d], dx
+    
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_write
+    mov rdx, 1
+    syscall
+    CMP dx, 1024  ;переброска в конец 
+    JL L1 ;переброска в конец
+
+    L3:
+    sub dx, 32
+    mov [var_d], dx
+    
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+    CMP dx, 1024  ;переброска в конец 
+    JL L1 ;переброска в конец
+
+    L1:
+    CMP edi, 100
+    JNE L5
+    
+    
+    
+    mov rax, 60
+    mov rdi, 0 
+    syscall
