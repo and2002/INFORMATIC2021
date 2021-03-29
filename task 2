@@ -1,0 +1,45 @@
+global  _start						
+section .bss						
+
+var_d:       resb 1
+section .text					
+_start:
+
+    mov rax, 1
+    mov rbx, 1
+    
+    mov ecx, 4
+    L1:
+    mov rdx, rbx
+    add rbx, rax
+    mov rax, rdx
+    loop L1
+    
+    mov rdx, rbx
+    
+    mov al, 70
+    mov [var_d], al
+    
+    cmp dl, 8
+    JE L2
+    
+    cmp dl, 120 
+    jl L3 
+    
+    L2:
+    mov al, 84
+    mov [var_d], al
+    
+    L3:
+    
+    
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+    
+    mov rax, 60
+    mov rdi, 0 
+    syscall
+    ret
