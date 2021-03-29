@@ -1,0 +1,58 @@
+global  _start						
+section .bss						
+var_write:   resb 7
+var_d:       resb 1
+section .text					
+_start:
+
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, var_write
+    mov rdx, 7
+    syscall
+
+    xor ebp, ebp
+    
+    L5:
+    xor dx, dx
+    mov dl, [var_write + ebp]
+    inc ebp
+
+    cmp dl, 48
+    JE L6 
+
+
+    sub dl, 1
+    mov [var_d], dl
+    
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    cmp dx, 1024  
+    Jl L1 
+ 
+
+    L6:
+    mov dl, 57
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    cmp dx, 1024
+    Jl L1
+
+    L1:
+    cmp ebp, 7
+    jne L5
+    
+    mov rax, 60
+    mov rdi, 0 
+    syscall
+    ret
