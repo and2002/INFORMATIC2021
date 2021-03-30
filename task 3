@@ -9,22 +9,22 @@ section .text
 _start:
     mov al, 127
     mov ecx, 0
-    L1:
+    ;L1:
     mov bl, Z
     mov [var_d+ecx], bl
-    
     shr al, 1
+    push flags
+    pop bx
     
-    setl bl
     add [var_d+ecx], bl
-    Loop L1
+    ;Loop L1
     
     
     
     mov rax, 1
     mov rdi, 1
     mov rsi, var_d
-    mov rdx, L
+    mov rdx, 1
     syscall
     
      mov rax, 60
