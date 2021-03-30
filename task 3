@@ -1,45 +1,33 @@
-global  _start						
+global  _start	
+Z equ 48
+N equ 7
+L equ 8
 section .bss						
 
-var_d:       resb 1
+var_d:       resb L
 section .text					
 _start:
-    mov bl, 48
-    mov [var_d], bl
+    mov al, 127
+    mov ecx, 0
+    L1:
+    mov bl, Z
+    mov [var_d+ecx], bl
     
-    mov al, 200
-    mov bl, al
     shr al, 1
     
-    cmp bx, [al]
-    JE L1 ;если был 0
+    setl bl
+    add [var_d+ecx], bl
+    Loop L1
     
-    cmp bx, [al]
-    JG L2 ;если был 1
     
-    jmp L3
     
-    L1:
-    
-    mov bl, 0
-    mov [var_d], bl
-    
-    jmp L3
-    
-    L2:
-    mov bl, 1
-    mov [var_d], bl
-    
-    jmp L3
-    
-    L3:
     mov rax, 1
     mov rdi, 1
     mov rsi, var_d
-    mov rdx, 1
+    mov rdx, L
     syscall
     
-    mov rax, 60
+     mov rax, 60
     mov rdi, 0 
     syscall
     ret
