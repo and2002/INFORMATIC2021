@@ -1,0 +1,45 @@
+  
+global  _start	
+Z equ 48
+N equ 7
+L equ 8
+section .bss						
+
+var_d:       resb L
+section .text					
+_start:
+   
+   mov dl, 1
+   mov [var_d+0], dl
+   
+   
+   mov ecx, 6
+   L1:
+   mov al, dl
+   add dl, al
+   mov [var_d+ecx], dl
+   Loop L1
+   
+  
+    
+    mov ecx, 1
+    
+    mov al, 9
+    
+    
+    mov bl, [var_d+ecx]
+    and bl, al
+    add bl, Z
+    mov [var_d+ecx], bl
+    
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, L
+    syscall
+   
+    
+    mov rax, 60
+    mov rdi, 0 
+    syscall
+    ret
