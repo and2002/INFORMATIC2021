@@ -1,0 +1,58 @@
+global _start
+
+N equ 8
+R equ 9
+code_zero equ 48 ; 48 это код нуля в ASCII
+
+section .bss
+var_d: resb R
+var_r: resb 1
+section .text
+_start:
+mov al, 131
+mov rcx, N
+mov bl, 0
+mov [var_r], bl
+
+L1:
+mov rdx, rcx
+dec rdx
+mov bl, al
+and bl, 00000001b
+add bl, code_zero
+mov [var_d + rdx], bl
+sar al, 1
+
+CMP bl, 49
+JE L2
+JMP L3
+L2:
+mov bl, 1
+add [var_r], bl
+L3:
+
+
+loop L1
+
+
+mov dl, code_zero
+add [var_r], dl
+mov al, 10
+mov [var_d+8], al
+
+mov rax, 1
+mov rdi, 1
+mov rsi, var_d
+mov rdx, R
+syscall
+
+mov rax, 1
+mov rdi, 1
+mov rsi, var_r
+mov rdx, 1
+syscall
+
+mov rax, 60
+xor rdi, rdi
+syscall
+ret
