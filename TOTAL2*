@@ -1,0 +1,180 @@
+var_1:       resb 1
+var_2:       resb 1
+var_a:       resb 4
+section .text					
+_start:
+ 
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, var_write
+    mov rdx, R
+    syscall
+    mov ebp, [var_write+0]
+    mov [var_a], ebp
+
+    xor ebp, ebp
+    mov ebp, 0
+    L5:
+    xor dx, dx
+    mov dl, [var_write + ebp]
+    inc ebp
+
+    cmp dl, 48
+    JE A0
+
+    cmp dl, 49
+    JE A1
+
+    cmp dl, 50
+    JE A2
+    
+    cmp dl, 51
+    JE A3
+    
+    cmp dl, 52
+    JE A4
+    
+    cmp dl, 53
+    JE A5
+    
+    cmp dl, 54
+    JE A6
+    
+    cmp dl, 55
+    JE A7
+    
+    cmp dl, 56
+    JE A8
+    
+    cmp dl, 57
+    JE A9
+    A0:
+    mov dl, 48
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+
+    A1:
+    mov dl, 57
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A2:
+    mov dl, 56
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A3:
+    mov dl, 55
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A4:
+    mov dl, 54
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A5:
+    mov dl, 53
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A6:
+    mov dl, 52
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A7:
+    mov dl, 51
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A8:
+    mov dl, 50
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    
+    A9:
+    mov dl, 48
+    mov [var_d], dl
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, var_d
+    mov rdx, 1
+    syscall
+
+    JMP L1
+    L1:
+    CMP ebp, [var_a]
+    JE L7
+    cmp ebp, R
+    jne L5
+    L7:
+    mov rax, 60
+    mov rdi, 0 
+    syscall
+    ret
+    
