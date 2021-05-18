@@ -1,0 +1,124 @@
+ global _start
+code_zero equ 48
+
+section .bss
+var_N: resb 1 
+var_read: resb 100 
+N: resq 1 
+
+section .text
+_start:
+    xor rbp, rbp
+
+    L1:
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, var_N 
+    mov rdx, 1 
+    syscall
+
+    xor rcx, rcx
+    mov cl, byte [var_N]
+
+    cmp cl, 10 
+	je L2
+
+    mov rax, rbp
+
+    mov ebx, 10
+    mul ebx 
+
+    sub cl, code_zero 
+    add rax, rcx
+
+    mov rbp, rax
+    jmp L1 
+
+    L2:
+
+	mov qword [N], rbp
+
+	mov rax, 0
+	mov rdi, 0
+	mov rsi, var_read
+	mov rdx, qword [N]
+	syscall
+    
+	mov rcx, qword [N]
+	L6:
+		mov rbx, rcx
+		dec rbx                   
+		mov dl, [var_read + rbx]
+		cmp dl, '0'
+		jg L3
+		je L4
+
+		out:
+		mov [var_read + rbx], dl
+		loop L6
+		jmp L5	
+
+	L3:
+	cmp dl, '9'
+	jg out
+	je A9
+	cmp dl, '1'
+	je A1
+	cmp dl, '2'
+	je A2
+	cmp dl, '3'
+	je A3
+	cmp dl, '4'
+	je A4
+	cmp dl, '5'
+	je A5
+	cmp dl, '6'
+	je A6
+	cmp dl, '7'
+	je A7
+	cmp dl, '8'
+	je A8
+
+	L4:
+	mov dl, '0'
+	jmp out
+	A1:
+	mov dl, '9'
+	jmp out
+	A2:
+	mov dl, '8'
+	jmp out
+	A3:
+	mov dl, '7'
+	jmp out
+	A4:
+	mov dl, '6'
+	jmp out
+	A5:
+	mov dl, '5'
+	jmp out
+	A6:
+	mov dl, '4'
+	jmp out
+	A7:
+	mov dl, '3'
+	jmp out
+	A8:
+	mov dl, '2'
+	jmp out
+	A9:
+	mov dl, '0'
+	jmp out
+
+	L5:
+
+	mov rax, 1
+	mov rdi, 1
+	mov rsi, var_read
+	mov rdx, qword [N]
+	syscall
+
+    mov rax, 60					
+	xor rdi, rdi			
+	syscall
+	ret
