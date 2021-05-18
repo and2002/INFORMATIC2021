@@ -1,0 +1,101 @@
+global _start
+section .text
+_start:
+                call fill_chess_buf
+
+                call file_open
+                mov [file_descr], rax
+
+                call file_write
+                call file_close
+                call end
+file_open:
+                mov rax, 2				
+                mov rdi, file_name		
+                mov rsi, flag		
+                syscall
+                ret
+file_write:	
+                mov rax, 1					
+                mov rdi, [file_descr]					
+                mov rsi, chess_buf				
+                mov rdx, chess_buf_size					
+                syscall		
+                ret
+fill_chess_buf:
+                mov rcx, chess_buf_size
+
+chess_buf_loop:
+		        xor rdx, rdx
+                mov rax, chess_buf_size
+                sub rax, rcx       
+                add rax, 1          
+                mov rbx, 9
+                div rbx
+                cmp rdx, 0
+                je next_line
+                xor rdx, rdx
+                mov rax, chess_buf_size
+                sub rax, rcx      
+                add rax, 1         
+                xor rdx, rdx
+                mov rbx, 2
+                div rbx
+                cmp rdx, 0
+                je white_cell
+dark_cell:             
+                xor rbx, rbx
+                mov rdx, chess_buf_size
+                sub rdx, rcx
+                mov bl, [white_cell_square]
+                mov [chess_buf + rdx], bl
+                dec rcx
+                test rcx, rcx
+                jnz chess_buf_loop
+white_cell:
+                xor rbx, rbx
+                mov rdx, chess_buf_size
+                sub rdx, rcx
+                mov bl, [black_cell_square]
+                mov [chess_buf + rdx], bl
+                dec rcx
+                test rcx, rcx
+                jnz chess_buf_loop
+next_line:
+                xor rbx, rbx
+                mov rdx, chess_buf_size
+                sub rdx, rcx
+                mov bl, [new_str]
+                mov [chess_buf + rdx], bl
+                dec rcx
+                test rcx, rcx
+                jnz chess_buf_loop
+end_chess_loop:
+                ret
+file_close:
+	mov rax, 3		
+	mov rdi, [file_descr]
+	syscall
+	ret 
+end:
+	mov rax, 60					
+	xor rdi, rdi					
+	syscall
+	ret 
+chess_buf_size      equ 72   	; 8 * 8 + 8 for '\n'
+flag                equ 66
+section .data
+
+black_cell_square:  db '1'		
+white_cell_square:  db '0' 	   
+new_str:            db 0xA	
+
+string:             dq 1
+column:             dq 1
+
+chess_buf:          times chess_buf_size db 0
+
+file_name:          db "out.txt", 0
+size_file_name:     dq $ - file_name
+
+file_descr:         dq 0
