@@ -1,0 +1,68 @@
+import numpy as np
+import matplotlib.pyplot as plt
+def plot_array_from_file(name_file):
+    file2 = open(name_file, "r")  ## open file
+    nums2 = file2.read().splitlines()  ## convertion to array: each line is element
+    length2 = len(nums2)
+    print(length2)
+    coef = float(1)
+    s = 0
+    p = 16
+    currtime = float(0)
+    x2 = [0 for i in range(length2-1-p)]  ## bulid array for x
+    t3 = [0 for i in range(length2-1-p)]  ## build array for y
+    y2 = [0 for i in range(length2-1-p)]
+    for i in range(p,length2-1):
+        t1 = str.find(nums2[i], ",")  ## find division factor :
+        t2 =str.find(nums2[i],",",t1+1)
+        if (t1 != -1) and (t2 != -1):
+            x2[i-p] = float(nums2[i][0:t1])  ## copy x values to x array
+            y2[i-p] = float(nums2[i][t1 + 1:t2])## copy y values to y array
+            x2[i-p] = float(coef*x2[i-p])
+            #if (i-p < 10):
+                #print(str(x2[i-p])+"__result = "+str(y2[i-p]))
+            #if (y2[i] == 0.001) and (s == 0):
+            #    control = x2[i]
+            #    s = 1
+            length = len(x2)
+    return x2,y2,length
+st = "C:/testpy/OneDrive_1_25.10.2022/Pulse.csv"
+st2 = "C:/testpy/assign2/T0036CH1.csv"
+file = open("C:/testpy/assign2/23.txt","w")
+x,y,length = plot_array_from_file(st2)
+print(length)
+dx = [-1 for i in range(length-1)]
+k = [0 for i in range(length - 1)]
+b = [0 for i in range(length - 1)]
+for i in range(length-1):
+    dx[i] = x[i+1]-x[i]
+d0 = min(dx)
+print(d0)
+step_x = [0.0 for i in range(length)]
+step_y = [0.0 for i in range(length)]
+current  = 0
+step_x = np.linspace(x[0],x[length-1],length)
+for i in range(0,length-1):
+    if ((x[i+1]-x[i]) != 0):
+        k[i] = float((y[i+1]-y[i])/(x[i+1]-x[i]))
+        b[i] = float((y[i] * x[i + 1] - x[i] * y[i + 1]) / (x[i + 1] - x[i]))
+for i1 in range(length):
+    if (i1 > 2):
+        al = 2
+    else:
+        al = 0
+    if (i1 < length - 2):
+        bl = 2
+    else:
+        bl = 0
+    for i2 in range(i1-al, i1 + bl):
+        #if (step_x[i1] > 0):
+        if ((step_x[i1] >= x[i2]) and (step_x[i1] <= x[i2+1])):
+            step_y[i1] = float(k[i2] * step_x[i1] + b[i2])
+            file.write(str(step_x[i1])+","+str(step_y[i1])+"\n")
+            print(i1,i2)
+file.close()
+print(x[0])
+plt.plot(x,y)
+plt.plot(step_x,step_y)
+plt.show()
