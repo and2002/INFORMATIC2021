@@ -1,0 +1,117 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.fftpack
+def plot_array_from_file(name_file):
+    file2 = open(name_file, "r")  ## open file
+    nums2 = file2.read().splitlines()  ## convertion to array: each line is element
+    length2 = len(nums2)
+    print(length2)
+    s = 0
+    currtime = float(0)
+    x2 = [0 for i in range(length2-1)]  ## bulid array for x
+    t3 = [0 for i in range(length2-1)]  ## build array for y
+    y2 = [0 for i in range(length2-1)]
+    for i in range(0,length2-1):
+        t1 = str.find(nums2[i], ",")  ## find division factor :
+        #t2 =str.find(nums2[i],",",t1+1)
+        if (t1 != -1):
+            x2[i] = float(nums2[i][0:t1])  ## copy x values to x array
+            y2[i] = float(nums2[i][t1+1:length2])## copy y values to y array
+            if(i < 20):
+                print(str(x2[i])+"__result = "+str(y2[i]))
+            #if (y2[i] == 0.001) and (s == 0):
+            #    control = x2[i]
+            #    s = 1
+    return x2,y2,length2
+def cut_frequency(x,y,f_st,f_end):
+    print(len(x))
+    start = 0
+    end  = 0
+    control_start = 0
+    control_end = 0
+    for i in range(len(x)):
+        if (x[i]>f_st) and (control_start == 0):
+            start = i
+            control_start = 1
+        if (x[i]>f_end) and (control_end == 0):
+            end = i-1
+            control_end = 1
+    #print(start)
+    #print(end)
+    n = end - start
+    #print(n)
+    x1 = [0 for i in range(n)]
+    y1 = [0 for i in range(n)]
+    for i in range(start,end):
+        #print(i)
+        x1[i-start] = x[i]
+        y1[i-start] = y[i]
+    return x1,y1
+def norm(x,y):
+    Y = max(y)
+    k = float(1/Y)
+    for i in range(len(y)):
+        y[i] = float(y[i]*k)
+    return x,y
+freq = [0.25,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]
+ampl = [0.88,1.76,2.12,2.12,2.16,2.2,2.16,2.04,1.92,1.84,1.6,1.52,1.44,1.36,1.28,1.28,1.2]
+freq_norm, ampl_norm = norm(freq,ampl)
+#print(ampl)
+st = "C:/testpy/assign2/23.txt"
+x_sample,y_sample,N = plot_array_from_file(st)
+print("============")
+print(N)
+print(x_sample[0])
+print(y_sample[0])
+'''
+x,y,N = plot_array_from_file(st)
+startT = x[16]
+endT = x[N-17]
+# Number of samplepoints
+# sample spacing
+T =  float(endT - startT) / (N-16)
+x = np.linspace(startT, endT, N)
+print(x)
+#y = np.sin(50.0 * 2.0*np.pi*x) + 0.5*np.sin(80.0 * 2.0*np.pi*x)
+yf = scipy.fftpack.fft(y)
+xf = np.linspace(0.0, 1.0/(2.0*T), N//2)
+
+fig, ax = plt.subplots()
+ax.plot(xf, 2.0/N * np.abs(yf[:N//2]))
+plt.show()
+'''
+# Number of samplepoints
+x = x_sample #make time points
+print("======wew")
+#print(x)
+print("===="+str(len(x)))
+print(x_sample[1],x_sample[0])
+T = float((x_sample[1]-x_sample[0]))
+print(T)
+############################### limits of freq
+n1 = 85
+n2 = 91
+t_low = float(60/n1)
+t_hig = float(60/n2)
+f_low = float(1/t_low)
+f_high = float(1/t_hig)
+print("FREQUENCY =====")
+print(str(f_low)+"_______"+str(f_high))
+#####################################
+#y = np.sin(60.0 * 2.0*np.pi*x) + 0.5*np.sin(90.0 * 2.0*np.pi*x)
+y_f = np.fft.fft(y_sample)
+x_f = np.linspace(0.0, 1.0/(2.0*T), N//2) #frequency
+y_a = 2.0/N * np.abs(y_f[:N//2]) # amplitude
+
+print(x_f)
+print(y_a)
+res_x,res_y = cut_frequency(x_f,y_a,0,1000)
+mod_res_x,mod_res_y = norm(res_x,res_y)
+#print(res_x)
+#print(res_y)
+plt.title('IR RED')
+plt.xlabel('frequency, Hz')
+plt.ylabel('Amplitude, %')
+plt.plot(freq_norm,ampl_norm,'r')
+plt.plot(mod_res_x,mod_res_y)
+plt.show()
