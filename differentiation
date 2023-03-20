@@ -1,0 +1,48 @@
+'''
+structure of file:
+lines from 1 to n structure: <variable \t value \t inaccuracy (in percent)
+example: R1    1000     50.0
+last lane: formula
+example: R1**2+X/3
+'''
+from sympy import *
+import numpy as np
+import math
+file_name = "C:/testpy/calculations_inaccuracy.txt"
+def plot_array_from_file(name_file):
+    file2 = open(name_file, "r")  ## open file
+    nums2 = file2.read().splitlines()  ## convertion to array: each line is element
+    length2 = len(nums2)
+    print(length2)
+    s = 0
+    currtime = float(0)
+    variable = [0 for i in range(length2-1)]  ## bulid array for variable
+    value = [0 for i in range(length2-1)]  ## build array for value
+    inaccuracy = [0 for i in range(length2-1)]
+    for i in range(0,length2-1):
+        t1 = str.find(nums2[i], "\t")  ## find division factor :
+        t2 =str.find(nums2[i],"\t",t1+1)
+        if (t1 != -1) and (t2 != -1):
+            variable[i] = str(nums2[i][0:t1])  ## copy x values to x array
+            value[i] = float(nums2[i][t1 + 1:t2])## copy y values to y array
+            inaccuracy[i] = float(nums2[i][t2+1:len(nums2[i])])
+    formula = str(nums2[length2-1])
+    return variable,value,inaccuracy,formula
+
+
+variable,value,inaccuracy,formula = plot_array_from_file(file_name)
+print(variable)
+print(formula)
+var = ["E" for i in range(len(variable))]
+diravative = [0 for i in range(len(variable))]
+formula = "R1**2+R2**2+R3**2"
+for i in range(len(variable)):
+    var[i] = Symbol('var'+str(i))
+for i in range(len(variable)):
+    formula.replace(variable[i],'var'+str(i))
+print(var)
+print(formula)
+x = Symbol(str('x'))
+y = eval("x**2+2")
+yprime = y.diff(x)
+print(yprime)
